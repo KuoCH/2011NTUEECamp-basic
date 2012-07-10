@@ -1,0 +1,33 @@
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>I Want to Play a Game...</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=big5">
+    <title>I Want to Play a Game...</title>
+    <script type="text/javascript">
+      var URL="http://profile.ak.fbcdn.net/hprofile-ak-snc4/371577_1276148216_825193586_n.jpg";
+      function change()
+      {
+        URL = document.getElementById("image1").value;
+        resetImage();
+      }
+
+    </script>
+    <form>
+      請輸入圖片位置：<input type = "text" id="image1">
+      <br><input type=button value="Submit" onclick="change()">
+    </form>
+
+  </head>
+  <body>
+    <h1>Jigsaw Puzzle</h1>
+    <div style="background-color:#CCC;" id="container">
+      <div style="background-color:#999;" id="puzzle">
+        Loading...
+      <script src="main.js"></script>
+    </div>
+      </div>
+    </div>
+    <p id="heyyo"></p>
+  </body>
+</html>

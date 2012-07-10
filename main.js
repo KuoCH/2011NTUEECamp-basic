@@ -19,39 +19,44 @@ var distribute={
   h:0,
   w:0,
 };
-
 var mouseRange={
   t:0,
   l:0,
   h:0,
   w:0,
 };
+var mapLeft;
 
 var ROWS = 3,COLS = 3;
 
 var pieces = [],inmap = [];
+var carriedPiece=false;
+
+var zCount;
 
 function imageLoaded(){
   entireHeight=image.height;
   entireWidth=image.width;
-  pieceHeight=entireHeight/ROWS;
-  pieceWidth=entireWidth/COLS;
-  container.style.height = entireHeight*mapContainerHeightRatio + 'px';
-  container.style.width = entireWidth*mapContainerWidthRatio + 'px';
+  pieceHeight=Math.floor(entireHeight/ROWS);
+  pieceWidth=Math.floor(entireWidth/COLS);
+  container.style.height = Math.floor(entireHeight*mapContainerHeightRatio) + 'px';
+  container.style.width = Math.floor(entireWidth*mapContainerWidthRatio) + 'px';
   map.style.height = entireHeight + 'px';
   map.style.width = entireWidth + 'px';
-  map.style.left = (mapContainerWidthRatio-1)*entireWidth/2 + 'px';
+  mapLeft = Math.floor((mapContainerWidthRatio-1)*entireWidth/2);
+  map.style.left = mapLeft + 'px';
   map.textContent ='';
   distribute.t = entireHeight;
   distribute.l = 0;
-  distribute.w = entireWidth*mapContainerWidthRatio-pieceWidth;
-  distribute.h = (mapContainerHeightRatio-1)*entireHeight - pieceHeight;
+  distribute.w = Math.floor(entireWidth*mapContainerWidthRatio-pieceWidth);
+  distribute.h = Math.floor((mapContainerHeightRatio-1)*entireHeight - pieceHeight);
   mouseRange.t = container.offsetTop;
   mouseRange.l = container.offsetLeft;
   mouseRange.w = container.offsetWidth;
   mouseRange.h = container.offsetHeight;
   generatePieces();
   randomisePieces();
+  zCount = 20;
 }
 
 function generatePieces(){
@@ -61,7 +66,8 @@ function generatePieces(){
 
   for(var i=0;i<ROWS;i++){
     for(var j=0;j<COLS;j++){
-      pieces[i*ROWS+j] = newPiece(i,j)
+      pieces[i*ROWS+j] = newPiece(i,j);
+      inmap[i*ROWS+j] = null;
     }
   }
 }
@@ -85,6 +91,7 @@ function newPiece(r,c){
   img.style.position = 'relative'
   img.style.top = (-r)*pieceHeight+'px';
   img.style.left = (-c)*pieceWidth+'px';
+  img.ondragstart = function(){ return false;  }
   pContainer.appendChild(piece);
   return {
     elm:piece,
@@ -111,85 +118,81 @@ function randomiseArray(a){
 
 // mouse listeners
 function mouseDown(e){
-  var mx = mouseX - offsetX;
-  var my = mouseY - offsetY;
-  if(!carriedTile){
-    // check for tile pick up,
-    // we work backwards to pick the tile on top
-    var i, tile;
-    for(i = tiles.length - 1; i > -1; i--){
-      tile = tiles[i];
-      if(mx >= tile.x && my >= tile.y && mx < tile.x + tile.width && my < tile.y + tile.height){
-        // get the carriedTile to the top of the stack
-        carriedTile = tile;
-        tile.pX = tile.x;
-        tile.pY = tile.y;
-        tiles.splice(i, 1);
-        tiles.push(tile);
-        container.appendChild(tile.div);
-        // check if we are lifting a tile out of a slot
-        if(mx >= 0 && my >= 0 && mx < COLS * scale && my < ROWS * scale){
-          var slotX = (mx * invScale) >> 0;
-          var slotY = (my * invScale) >> 0;
-          if(slots[slotY][slotX] == tile){
-            slots[slotY][slotX] = undefined;
-          }
+  if(carriedPiece){
+    return;
+  }
+  if(e.pageX&&e.pageY){
+    var mouseX = e.pageX - mouseRange.l,mouseY = e.pageY - mouseRange.t;
+    if(mouseX>=0&&mouseX<=mouseRange.w&&mouseY>=0&&mouseY<=mouseRange.h){
+      var piece;
+      for(var i = 0;i<pieces.length;i++){
+        piece = pieces[i];
+        var iX = mouseX - piece.elm.offsetLeft,iY = mouseY -piece.elm.offsetTop;
+        if(iX>=0&&iX<=piece.elm.offsetWidth&&iY>=0&&iY<=piece.elm.offsetHeight){
+          carriedPiece = piece;
+          carriedPiece.oX = carriedPiece.elm.offsetLeft;
+          carriedPiece.oY = carriedPiece.elm.offsetTop;
+          carriedPiece.elm.style.zIndex = zCount++;
+          for(var i =0;i<(ROWS*COLS);i++) if(inmap[i]==carriedPiece.seq) inmap[i] = null;
+          break;
         }
-        tile.x = -scale * 0.5 + mx;
-        tile.y = -scale * 0.5 + my;
-        tile.update();
-        break;
       }
     }
   }
 }
 function mouseMove(e){
-  if(carriedPiece){
+  if(carriedPiece&&e.pageX&&e.pageY){
     var mouseX = e.pageX - mouseRange.l,mouseY = e.pageY - mouseRange.t;
     if(mouseX>=0&&mouseX<=mouseRange.w&&mouseY>=0&&mouseY<=mouseRange.h)
     {
-      carriedPiece.elm.style.left = mouseX;
-      carriedPiece.elm.style.top = mouseY;
+      carriedPiece.elm.style.left = mouseX + 'px';
+      carriedPiece.elm.style.top = mouseY + 'px';
     }
   }
 
 }
 function mouseUp(e){
-  var mx = mouseX - offsetX;
-  var my = mouseY - offsetY;
-
-  if(mx >= 0 && my >= 0 && mx < COLS * scale && my < ROWS * scale){
-    // see if we can drop the tile on the board, otherwise
-    // drop it where it was picked up
-    var slotX = (mx * invScale) >> 0;
-    var slotY = (my * invScale) >> 0;
-    if(!slots[slotY][slotX]){
-      slots[slotY][slotX] = carriedTile;
-      carriedTile.x = slotX * scale;
-      carriedTile.y = slotY * scale;
-    } else {
-      carriedTile.x = carriedTile.pX;
-      carriedTile.y = carriedTile.pY;
-      // the tile may have been in a slot previously, we can
-      // verify this by checking if it was above the tray
-      if(carriedTile.y < ROWS * scale){
-        slotX = (carriedTile.x * invScale) >> 0;
-        slotY = (carriedTile.y * invScale) >> 0;
-        slots[slotY][slotX] = carriedTile;
+  if(carriedPiece&&e.pageX&&e.pageY){
+    var mouseX = e.pageX - mouseRange.l,mouseY = e.pageY - mouseRange.t;
+    if(mouseX>=0&&mouseX<=mouseRange.w&&mouseY>=0&&mouseY<=mouseRange.h)
+    {
+      if(mouseY<distribute.t){ // 判斷是否需要放到map上
+        var r,c;
+        for(r = 0;r<(ROWS-1);r++) if((r+0.5)*pieceHeight>mouseY) break;
+        for(c=0;c<(COLS-1);c++) if(((c+0.5)*pieceWidth+mapLeft)>mouseX) break;
+        if(inmap[r*ROWS+c]){
+          carriedPiece.elm.style.left = carriedPiece.oX + 'px';
+          carriedPiece.elm.style.top = carriedPiece.oY + 'px';
+        }else{
+          carriedPiece.elm.style.left = (c*pieceWidth+mapLeft) + 'px';
+          carriedPiece.elm.style.top = r*pieceHeight + 'px';
+          inmap[r*ROWS+c] = carriedPiece.seq;
+          updateComplete();
+        }
+      }else{
+        carriedPiece.elm.style.left = mouseX + 'px';
+        carriedPiece.elm.style.top = mouseY + 'px';
       }
+    }else{
+        carriedPiece.elm.style.left = carriedPiece.oX + 'px';
+        carriedPiece.elm.style.top = carriedPiece.oY + 'px';
     }
-  } else {
-    // drop it in the tray
-    carriedTile.y = Math.max(carriedTile.y, ROWS * scale);
-  }
-  carriedTile.update();
-  carriedTile = undefined;
-  var c = complete();
-  if(c == ROWS * COLS){
-    //statusP.innerHTML = "Great Success!";
-    alert('yahoo');
-  } else {
-    var p = ((100 / (ROWS * COLS)) * c) >> 0;
-    statusP.innerHTML = p + "% Complete";
+        carriedPiece.oX = null;
+        carriedPiece.oY = null;
+        carriedPiece = null;
   }
 }
+function updateComplete(){
+  var win = true;
+  for(var i =0;i<(ROWS*COLS);i++) { 
+    if(inmap[i]!=i) win = false;
+  }
+  if(win) {
+    console.log('YAYA~~~~~');
+    alert('恭喜恭喜！～');
+  }
+}
+container.addEventListener("mousedown",mouseDown,false);
+container.addEventListener("mousemove",mouseMove,false);
+container.addEventListener("mouseup",mouseUp,false);
+

@@ -187,7 +187,7 @@ function updateComplete(){
   }
   if(win) {
     console.log('YAYA~~~~~');
-    alert('恭喜恭喜！～');
+    document.getElementById('heyyo').innerHTML = '你完成了！！！！';
   }
 }
 container.addEventListener("mousedown",mouseDown,false);

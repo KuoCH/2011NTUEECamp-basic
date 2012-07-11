@@ -1,7 +1,7 @@
 var URL='https://fbcdn-sphotos-a.akamaihd.net/hphotos-ak-ash3/s720x720/527073_472781902738329_1982279571_n.jpg';
 var image = new Image();
 image.src = URL;
-image.onload = imageLoaded
+image.onload = imageLoaded;
 
 var map = document.getElementById('map');
 
@@ -110,8 +110,6 @@ function randomisePieces(){
   }
 }
 
-// Read tin - an algorithm I nicked off the net so don't come
-// whining to me about readability
 function randomiseArray(a){
   for(var x, j, i = a.length; i; j = parseInt(Math.random() * i), x = a[--i], a[i] = a[j], a[j] = x);
 }

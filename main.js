@@ -36,20 +36,35 @@ var carriedPiece=null;
 var carriedMouseXOffset=0;
 var carriedMouseYOffset=0;
 
-var zCount;
+var zCount=20;
 
-function imageLoaded(){
+function imageLoaded(){  //此處挖空讓小隊員填空
+  modifyBelowRegion('圖片載入完成！你有辦法完成這個拼圖嗎？');
+  recordImageInfo();            // 記錄Image的資訊
+  setContainerSize();           //設定container層的大小位置
+  setMapSize();                 //設定map層的大小位置
+  map.textContent ='';
+  calculateDistributeRegion();  //計算碎片打亂位置的範圍
+  generatePieces();             //產生各個碎片
+  randomisePieces();            //將各個碎片打亂
+}
+function recordImageInfo(){
   entireHeight=image.height;
   entireWidth=image.width;
   pieceHeight=Math.floor(entireHeight/ROWS);
   pieceWidth=Math.floor(entireWidth/COLS);
+}
+function setContainerSize(){
   container.style.height = Math.floor(entireHeight*mapContainerHeightRatio) + 'px';
   container.style.width = Math.floor(entireWidth*mapContainerWidthRatio) + 'px';
+}
+function setMapSize(){
   map.style.height = entireHeight + 'px';
   map.style.width = entireWidth + 'px';
   mapLeft = Math.floor((mapContainerWidthRatio-1)*entireWidth/2);
   map.style.left = mapLeft + 'px';
-  map.textContent ='';
+}
+function calculateDistributeRegion(){
   distribute.t = entireHeight;
   distribute.l = 0;
   distribute.w = Math.floor(entireWidth*mapContainerWidthRatio-pieceWidth);
@@ -58,11 +73,7 @@ function imageLoaded(){
   mouseRange.l = container.offsetLeft;
   mouseRange.w = container.offsetWidth;
   mouseRange.h = container.offsetHeight;
-  generatePieces();
-  randomisePieces();
-  zCount = 20;
 }
-
 function generatePieces(){
   if(pieces.length!==0){
     pContainer.innerHTML ='';
@@ -90,6 +101,7 @@ function newPiece(r,c){
   }
   piece.style.position = 'absolute';
   piece.style.overflow = 'hidden';
+  piece.style.zIndex = zCount++;
   piece.innerHTML = '<img src="' + URL + '">';
   var img = piece.firstChild;
   img.style.position = 'relative'
@@ -122,25 +134,30 @@ function mouseDown(e){
   if(e.pageX&&e.pageY){
     var mouseX = e.pageX - mouseRange.l,mouseY = e.pageY - mouseRange.t;
     if(mouseX>=0&&mouseX<=mouseRange.w&&mouseY>=0&&mouseY<=mouseRange.h){
-      var piece;
+      var piece,hZi=null,hZ=null;
       for(var i = 0;i<pieces.length;i++){
         piece = pieces[i];
         var iX = mouseX - piece.elm.offsetLeft,iY = mouseY -piece.elm.offsetTop;
         if(iX>=0&&iX<=piece.elm.offsetWidth&&iY>=0&&iY<=piece.elm.offsetHeight){
-          carriedPiece = piece;
-          carriedPiece.oX = carriedPiece.elm.offsetLeft;
-          carriedPiece.oY = carriedPiece.elm.offsetTop;
-          carriedPiece.elm.style.zIndex = zCount++;
-          carriedMouseXOffset = iX;
-          carriedMouseYOffset = iY;
-          for(var i =0;i<(ROWS*COLS);i++){
-            if(inmap[i]==carriedPiece.seq) {
-              inmap[i] = null;
-              carriedPiece.oInmap = i;
-              break;
-            }
+          if(hZi===null||piece.elm.style.zIndex>hZ){
+            hZi=i;
+            hZ = piece.elm.style.zIndex;
           }
-          break;
+        }
+      }
+      if(hZi!==null){
+        carriedPiece = pieces[hZi];
+        carriedPiece.oX = carriedPiece.elm.offsetLeft;
+        carriedPiece.oY = carriedPiece.elm.offsetTop;
+        carriedPiece.elm.style.zIndex = zCount++;
+        carriedMouseXOffset = mouseX - pieces[hZi].elm.offsetLeft;
+        carriedMouseYOffset = mouseY -pieces[hZi].elm.offsetTop;
+        for(var i =0;i<(ROWS*COLS);i++){
+          if(inmap[i]==carriedPiece.seq) {
+            inmap[i] = null;
+            carriedPiece.oInmap = i;
+            break;
+          }
         }
       }
     }
@@ -193,14 +210,21 @@ function mouseUp(e){
   }
 }
 function updateComplete(){
-  var win = true;
+  var ifwin = true;
   for(var i =0;i<(ROWS*COLS);i++) { 
-    if(inmap[i]!=i) win = false;
+    if(inmap[i]!=i) ifwin = false;
   }
-  if(win) {
+  if(ifwin) {
+    setTimeout(win,1);
+  }
+}
+function win(){ //這個方塊可挖空給小隊員填效果
     console.log('YAYA~~~~~');
-    document.getElementById('heyyo').innerHTML = '恭喜恭喜～你完成了！';
-  }
+    modifyBelowRegion( '恭喜恭喜～你完成了！' );
+    alert('con');
+}
+function modifyBelowRegion(s){
+    document.getElementById('below-region').innerHTML = s;
 }
 container.addEventListener('mousedown',mouseDown,false);
 container.addEventListener('mousemove',mouseMove,false);
@@ -208,7 +232,7 @@ container.addEventListener('mouseup',mouseUp,false);
 imageUrlInput.addEventListener('keydown', function(e) {
   if (e.keyCode === 13) {
     URL = imageUrlInput.value;
+    document.getElementById('below-region').innerHTML = '';
     image.src = URL;
-    document.getElementById('heyyo').innerHTML = '';
   }
 });

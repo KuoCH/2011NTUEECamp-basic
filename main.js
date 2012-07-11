@@ -175,6 +175,7 @@ function mouseUp(e){
         }else{
           carriedPiece.elm.style.left = (c*pieceWidth+mapLeft) + 'px';
           carriedPiece.elm.style.top = r*pieceHeight + 'px';
+          carriedPiece.oInmap = null;
           inmap[r*ROWS+c] = carriedPiece.seq;
           updateComplete();
         }

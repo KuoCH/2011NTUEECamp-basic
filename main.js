@@ -1,7 +1,7 @@
 var URL='https://fbcdn-sphotos-a.akamaihd.net/hphotos-ak-ash3/s720x720/527073_472781902738329_1982279571_n.jpg';
 var image = new Image();
 image.src = URL;
-image.onload = imageLoaded;
+image.onload = imageLoaded
 
 var map = document.getElementById('map');
 
@@ -31,6 +31,8 @@ var ROWS = 3,COLS = 3;
 
 var pieces = [],inmap = [];
 var carriedPiece=false;
+var carriedMouseXOffset=0;
+var carriedMouseYOffset=0;
 
 var zCount;
 
@@ -102,16 +104,11 @@ function newPiece(r,c){
 }
 
 function randomisePieces(){
-  randomiseArray(pieces);
   var i;
   for(i = 0; i < pieces.length; i++){
     pieces[i].elm.style.left = distribute.l + distribute.w * Math.random() + 'px';
     pieces[i].elm.style.top = distribute.t + distribute.h * Math.random() + 'px';
   }
-}
-
-function randomiseArray(a){
-  for(var x, j, i = a.length; i; j = parseInt(Math.random() * i), x = a[--i], a[i] = a[j], a[j] = x);
 }
 
 // mouse listeners
@@ -131,6 +128,8 @@ function mouseDown(e){
           carriedPiece.oX = carriedPiece.elm.offsetLeft;
           carriedPiece.oY = carriedPiece.elm.offsetTop;
           carriedPiece.elm.style.zIndex = zCount++;
+          carriedMouseXOffset = iX;
+          carriedMouseYOffset = iY;
           for(var i =0;i<(ROWS*COLS);i++) if(inmap[i]==carriedPiece.seq) inmap[i] = null;
           break;
         }
@@ -143,8 +142,8 @@ function mouseMove(e){
     var mouseX = e.pageX - mouseRange.l,mouseY = e.pageY - mouseRange.t;
     if(mouseX>=0&&mouseX<=mouseRange.w&&mouseY>=0&&mouseY<=mouseRange.h)
     {
-      carriedPiece.elm.style.left = mouseX + 'px';
-      carriedPiece.elm.style.top = mouseY + 'px';
+      carriedPiece.elm.style.left = mouseX-carriedMouseXOffset + 'px';
+      carriedPiece.elm.style.top = mouseY-carriedMouseYOffset + 'px';
     }
   }
 
@@ -152,13 +151,14 @@ function mouseMove(e){
 function mouseUp(e){
   if(carriedPiece&&e.pageX&&e.pageY){
     var mouseX = e.pageX - mouseRange.l,mouseY = e.pageY - mouseRange.t;
-    if(mouseX>=0&&mouseX<=mouseRange.w&&mouseY>=0&&mouseY<=mouseRange.h)
+    var picX = mouseX - carriedMouseXOffset, picY = mouseY - carriedMouseYOffset;
+    if(picX>=0&&picX<=mouseRange.w&&picY>=0&&picY<=mouseRange.h)
     {
-      if(mouseY<distribute.t){ // 判斷是否需要放到map上
+      if(picY<distribute.t){ // 判斷是否需要放到map上
         var r,c;
-        for(r = 0;r<(ROWS-1);r++) if((r+0.5)*pieceHeight>mouseY) break;
-        for(c=0;c<(COLS-1);c++) if(((c+0.5)*pieceWidth+mapLeft)>mouseX) break;
-        if(inmap[r*ROWS+c]){
+        for(r = 0;r<(ROWS-1);r++) if((r+0.5)*pieceHeight>picY) break;
+        for(c=0;c<(COLS-1);c++) if(((c+0.5)*pieceWidth+mapLeft)>picX) break;
+        if(inmap[r*ROWS+c]!=null){
           carriedPiece.elm.style.left = carriedPiece.oX + 'px';
           carriedPiece.elm.style.top = carriedPiece.oY + 'px';
         }else{
@@ -168,8 +168,8 @@ function mouseUp(e){
           updateComplete();
         }
       }else{
-        carriedPiece.elm.style.left = mouseX + 'px';
-        carriedPiece.elm.style.top = mouseY + 'px';
+        carriedPiece.elm.style.left = picX + 'px';
+        carriedPiece.elm.style.top = picY + 'px';
       }
     }else{
         carriedPiece.elm.style.left = carriedPiece.oX + 'px';
@@ -187,10 +187,9 @@ function updateComplete(){
   }
   if(win) {
     console.log('YAYA~~~~~');
-    document.getElementById('heyyo').innerHTML = '你完成了！！！！';
+    alert('恭喜恭喜！～');
   }
 }
 container.addEventListener("mousedown",mouseDown,false);
 container.addEventListener("mousemove",mouseMove,false);
 container.addEventListener("mouseup",mouseUp,false);
-

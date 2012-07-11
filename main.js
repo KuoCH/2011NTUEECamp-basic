@@ -7,6 +7,8 @@ var map = document.getElementById('map');
 
 var container = document.getElementById('container');
 
+var imageUrlInput = document.getElementById('image-url');
+
 var pContainer = document.getElementById('piecesContainer')
 
 var mapContainerHeightRatio = 1.8,mapContainerWidthRatio = 1.2;
@@ -30,7 +32,7 @@ var mapLeft;
 var ROWS = 3,COLS = 3;
 
 var pieces = [],inmap = [];
-var carriedPiece=false;
+var carriedPiece=null;
 var carriedMouseXOffset=0;
 var carriedMouseYOffset=0;
 
@@ -98,6 +100,7 @@ function newPiece(r,c){
   return {
     elm:piece,
     seq:r*ROWS+c,
+    oInmap:null,
     oX:null,
     oY:null
   };
@@ -130,7 +133,13 @@ function mouseDown(e){
           carriedPiece.elm.style.zIndex = zCount++;
           carriedMouseXOffset = iX;
           carriedMouseYOffset = iY;
-          for(var i =0;i<(ROWS*COLS);i++) if(inmap[i]==carriedPiece.seq) inmap[i] = null;
+          for(var i =0;i<(ROWS*COLS);i++){
+            if(inmap[i]==carriedPiece.seq) {
+              inmap[i] = null;
+              carriedPiece.oInmap = i;
+              break;
+            }
+          }
           break;
         }
       }
@@ -161,6 +170,8 @@ function mouseUp(e){
         if(inmap[r*ROWS+c]!=null){
           carriedPiece.elm.style.left = carriedPiece.oX + 'px';
           carriedPiece.elm.style.top = carriedPiece.oY + 'px';
+          inmap[carriedPiece.oInmap] = carriedPiece.seq;
+          carriedPiece.oInmap = null;
         }else{
           carriedPiece.elm.style.left = (c*pieceWidth+mapLeft) + 'px';
           carriedPiece.elm.style.top = r*pieceHeight + 'px';
@@ -187,9 +198,16 @@ function updateComplete(){
   }
   if(win) {
     console.log('YAYA~~~~~');
-    alert('恭喜恭喜！～');
+    document.getElementById('heyyo').innerHTML = '恭喜恭喜～你完成了！';
   }
 }
-container.addEventListener("mousedown",mouseDown,false);
-container.addEventListener("mousemove",mouseMove,false);
-container.addEventListener("mouseup",mouseUp,false);
+container.addEventListener('mousedown',mouseDown,false);
+container.addEventListener('mousemove',mouseMove,false);
+container.addEventListener('mouseup',mouseUp,false);
+imageUrlInput.addEventListener('keydown', function(e) {
+  if (e.keyCode === 13) {
+    URL = imageUrlInput.value;
+    image.src = URL;
+    document.getElementById('heyyo').innerHTML = '';
+  }
+});

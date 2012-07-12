@@ -5,11 +5,10 @@
 
 挖空一號：
 function imageLoaded(){  //此處挖空讓小隊員填空
-  modifyBelowRegion('圖片載入完成！你有辦法完成這個拼圖嗎？');
+  modifyStatus('圖片載入完成！你有辦法完成這個拼圖嗎？');
   recordImageInfo();            // 記錄Image的資訊
   setContainerSize();           //設定container層的大小位置
   setMapSize();                 //設定map層的大小位置
-  map.textContent ='';
   calculateDistributeRegion();  //計算碎片打亂位置的範圍
   generatePieces();             //產生各個碎片
   randomisePieces();            //將各個碎片打亂
@@ -19,10 +18,10 @@ function imageLoaded(){  //此處挖空讓小隊員填空
 挖空二號：
 function win(){ //這個方塊可挖空給小隊員填效果
     console.log('YAYA~~~~~');
-    modifyBelowRegion( '恭喜恭喜～你完成了！' );
+    modifyStatus( '恭喜恭喜～你完成了！' );
 }
 此區可以讓小隊員自行發揮想要有的效果
 
 另外還可以教的效果
 alert
-加圖片到below-region
+加圖片到status

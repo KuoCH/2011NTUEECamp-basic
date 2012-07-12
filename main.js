@@ -39,11 +39,10 @@ var carriedMouseYOffset=0;
 var zCount=20;
 
 function imageLoaded(){  //此處挖空讓小隊員填空
-  modifyBelowRegion('圖片載入完成！你有辦法完成這個拼圖嗎？');
+  modifyStatus('圖片載入完成！你有辦法完成這個拼圖嗎？');
   recordImageInfo();            // 記錄Image的資訊
   setContainerSize();           //設定container層的大小位置
   setMapSize();                 //設定map層的大小位置
-  map.textContent ='';
   calculateDistributeRegion();  //計算碎片打亂位置的範圍
   generatePieces();             //產生各個碎片
   randomisePieces();            //將各個碎片打亂
@@ -220,11 +219,11 @@ function updateComplete(){
 }
 function win(){ //這個方塊可挖空給小隊員填效果
     console.log('YAYA~~~~~');
-    modifyBelowRegion( '恭喜恭喜～你完成了！' );
+    modifyStatus( '恭喜恭喜～你完成了！' );
     alert('con');
 }
-function modifyBelowRegion(s){
-    document.getElementById('below-region').innerHTML = s;
+function modifyStatus(s){
+    document.getElementById('status').innerHTML = s;
 }
 container.addEventListener('mousedown',mouseDown,false);
 container.addEventListener('mousemove',mouseMove,false);
@@ -232,7 +231,6 @@ container.addEventListener('mouseup',mouseUp,false);
 imageUrlInput.addEventListener('keydown', function(e) {
   if (e.keyCode === 13) {
     URL = imageUrlInput.value;
-    document.getElementById('below-region').innerHTML = '';
     image.src = URL;
   }
 });

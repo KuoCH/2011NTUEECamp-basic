@@ -1,15 +1,16 @@
 2012 電機營教學組程式組基礎實驗拼圖 codes
-已將code改成可以挖空的style
+
+Student中放的是有挖空的版本
 
 挖空一號：
-function imageLoaded(){  //此處挖空讓小隊員填空
+function imageLoaded(){
   modifyStatus('圖片載入完成！你有辦法完成這個拼圖嗎？');
   recordImageInfo();            // 記錄Image的資訊
   setContainerSize();           //設定container層的大小位置
   setMapSize();                 //設定map層的大小位置
   calculateDistributeRegion();  //計算碎片打亂位置的範圍
   generatePieces();             //產生各個碎片
-  randomisePieces();            //將各個碎片打亂
+  randomizePieces();            //將各個碎片打亂
 }
 此區可以一行一行加入，讓小隊員看到效果
 

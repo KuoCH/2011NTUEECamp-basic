@@ -35,7 +35,7 @@ function imageLoaded(){  //此處挖空讓小隊員填空
   setMapSize();                 //設定map層的大小位置
   calculateDistributeRegion();  //計算碎片打亂位置的範圍
   generatePieces();             //產生各個碎片
-  randomisePieces();            //將各個碎片打亂
+  randomizePieces();            //將各個碎片打亂
 }
 function recordImageInfo(){
   entireHeight=image.height;

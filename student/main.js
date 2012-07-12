@@ -1,3 +1,11 @@
+function imageLoaded(){
+  // TODO
+}
+function win(){
+  // TODO
+}
+
+
 var URL='https://fbcdn-sphotos-a.akamaihd.net/hphotos-ak-ash3/s720x720/527073_472781902738329_1982279571_n.jpg';
 var image = new Image();
 image.src = URL;
@@ -27,16 +35,6 @@ var carriedPiece=null;
 var carriedMouseXOffset=0;
 var carriedMouseYOffset=0;
 var zCount=20;
-
-function imageLoaded(){  //此處挖空讓小隊員填空
-  modifyStatus('圖片載入完成！你有辦法完成這個拼圖嗎？');
-  recordImageInfo();            // 記錄Image的資訊
-  setContainerSize();           //設定container層的大小位置
-  setMapSize();                 //設定map層的大小位置
-  calculateDistributeRegion();  //計算碎片打亂位置的範圍
-  generatePieces();             //產生各個碎片
-  randomisePieces();            //將各個碎片打亂
-}
 function recordImageInfo(){
   entireHeight=image.height;
   entireWidth=image.width;
@@ -75,7 +73,6 @@ function generatePieces(){
     }
   }
 }
-
 function newPiece(r,c){
   var piece = document.createElement('div');
   if(r === (ROWS-1)){
@@ -104,9 +101,8 @@ function newPiece(r,c){
     oInmap:null,
     oX:null,
     oY:null
-  };
+  }i;
 }
-
 function randomizePieces(){
   var i;
   for(i = 0; i < pieces.length; i++){
@@ -206,11 +202,6 @@ function updateComplete(){
   if(ifwin) {
     setTimeout(win,1);
   }
-}
-function win(){ //這個方塊可挖空給小隊員填效果
-    console.log('YAYA~~~~~');
-    modifyStatus( '恭喜恭喜～你完成了！' );
-    alert('con');
 }
 function modifyStatus(s){
     document.getElementById('status').innerHTML = s;

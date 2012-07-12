@@ -1,8 +1,6 @@
 2012 電機營教學組程式組基礎實驗拼圖 codes
 已將code改成可以挖空的style
 
-
-
 挖空一號：
 function imageLoaded(){  //此處挖空讓小隊員填空
   modifyStatus('圖片載入完成！你有辦法完成這個拼圖嗎？');

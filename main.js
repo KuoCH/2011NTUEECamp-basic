@@ -2,19 +2,12 @@ var URL='https://fbcdn-sphotos-a.akamaihd.net/hphotos-ak-ash3/s720x720/527073_47
 var image = new Image();
 image.src = URL;
 image.onload = imageLoaded
-
 var map = document.getElementById('map');
-
 var container = document.getElementById('container');
-
 var imageUrlInput = document.getElementById('image-url');
-
 var pContainer = document.getElementById('piecesContainer')
-
 var mapContainerHeightRatio = 1.8,mapContainerWidthRatio = 1.2;
-
 var entireHeight,entireWidth,pieceHeight,pieceWidth;
-
 var distribute={
   t:0,
   l:0,
@@ -28,14 +21,11 @@ var mouseRange={
   w:0,
 };
 var mapLeft;
-
 var ROWS = 3,COLS = 3;
-
 var pieces = [],inmap = [];
 var carriedPiece=null;
 var carriedMouseXOffset=0;
 var carriedMouseYOffset=0;
-
 var zCount=20;
 
 function imageLoaded(){  //此處挖空讓小隊員填空
@@ -230,6 +220,7 @@ container.addEventListener('mousemove',mouseMove,false);
 container.addEventListener('mouseup',mouseUp,false);
 imageUrlInput.addEventListener('keydown', function(e) {
   if (e.keyCode === 13) {
+    modifyStatus( 'Loading Picture...' );
     URL = imageUrlInput.value;
     image.src = URL;
   }

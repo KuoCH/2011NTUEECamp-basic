@@ -179,10 +179,12 @@ function mouseUp(e){
       }else{
         carriedPiece.elm.style.left = picX + 'px';
         carriedPiece.elm.style.top = picY + 'px';
+        inmap[carriedPiece.oInmap] = carriedPiece.seq;
       }
     }else{
         carriedPiece.elm.style.left = carriedPiece.oX + 'px';
         carriedPiece.elm.style.top = carriedPiece.oY + 'px';
+        inmap[carriedPiece.oInmap] = carriedPiece.seq;
     }
         carriedPiece.oX = null;
         carriedPiece.oY = null;

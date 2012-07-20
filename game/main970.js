@@ -192,10 +192,12 @@ function mouseUp(e){
       }else{
         carriedPiece.elm.style.left = picX + 'px';
         carriedPiece.elm.style.top = picY + 'px';
+        inmap[carriedPiece.oInmap] = carriedPiece.seq;
       }
     }else{
         carriedPiece.elm.style.left = carriedPiece.oX + 'px';
         carriedPiece.elm.style.top = carriedPiece.oY + 'px';
+        inmap[carriedPiece.oInmap] = carriedPiece.seq;
     }
         carriedPiece.oX = null;
         carriedPiece.oY = null;
@@ -217,10 +219,3 @@ function modifyStatus(s){
 container.addEventListener('mousedown',mouseDown,false);
 container.addEventListener('mousemove',mouseMove,false);
 container.addEventListener('mouseup',mouseUp,false);
-imageUrlInput.addEventListener('keydown', function(e) {
-  if (e.keyCode === 13) {
-    modifyStatus( 'Loading Picture...' );
-    URL = imageUrlInput.value;
-    image.src = URL;
-  }
-});

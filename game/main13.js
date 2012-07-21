@@ -29,7 +29,7 @@ var carriedMouseYOffset=0;
 var zCount=20;
 
 function imageLoaded(){
-  modifyStatus('圖片載入完成！你有辦法完成這個拼圖嗎？');
+  modifyStatus('現在是第二張(2/10)');
   recordImageInfo();
   setContainerSize();
   setMapSize();
@@ -38,7 +38,6 @@ function imageLoaded(){
   randomizePieces();
 }
 function win(){
-    alert('完成了第二張');
     location.href='index23.html'
 }
 function recordImageInfo(){

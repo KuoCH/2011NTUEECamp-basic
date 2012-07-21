@@ -29,7 +29,7 @@ var carriedMouseYOffset=0;
 var zCount=20;
 
 function imageLoaded(){
-  modifyStatus('圖片載入完成！你有辦法完成這個拼圖嗎？');
+  modifyStatus('現在是最後一張！(10/10)');
   recordImageInfo();
   setContainerSize();
   setMapSize();
@@ -38,8 +38,7 @@ function imageLoaded(){
   randomizePieces();
 }
 function win(){
-    alert('完成了第十張');
-    alert('恭喜你！！！你完成了所有的拼圖！！請把這個訊息留給學長看！');
+  modifyStatus('恭喜你完成了！！快舉手跟學長講！！');
 }
 function recordImageInfo(){
   entireHeight=image.height;

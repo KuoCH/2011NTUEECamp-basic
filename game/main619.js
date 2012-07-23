@@ -197,6 +197,7 @@ function mouseUp(e){
         carriedPiece.elm.style.top = carriedPiece.oY + 'px';
         inmap[carriedPiece.oInmap] = carriedPiece.seq;
     }
+    carriedPiece.oInmap=null;
         carriedPiece.oX = null;
         carriedPiece.oY = null;
         carriedPiece = null;
